@@ -1,0 +1,6 @@
+
+access_key = "your-aws-access-key"
+secret_key = "your-aws-secret-key"
+token      = "your-aws-token"
+
+ami = "your-ami-id"
