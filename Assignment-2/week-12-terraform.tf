@@ -2,7 +2,10 @@
 variable "access_key" {}
 variable "secret_key" {}
 variable "token" {}
-variable "key_name" {}
+
+variable "ami" {}
+
+variable "key_name" { default = "vockey" }
 
 variable "region" { default = "us-east-1" }
 variable "network_address_space" { default = "10.0.0.0/16" }
@@ -16,39 +19,19 @@ provider "aws" {
   region     = var.region
 }
 
-data "aws_ami" "aws-linux" {
-  most_recent = true
-  owners      = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["amzn-ami-hvm*"]
-  }
-
-  filter {
-    name   = "root-device-type"
-    values = ["ebs"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-}
-
 resource "aws_vpc" "testVPC" {
-  cidr_block = var.network_address_space
+  cidr_block           = var.network_address_space
   enable_dns_hostnames = true
 
   tags = {
-    Name = "testVPC"
+    Name = "itKMITL-VPC"
   }
 }
 
 resource "aws_subnet" "Public1" {
-  vpc_id            = aws_vpc.testVPC.id
-  cidr_block        = var.subnet1_address_space
-  availability_zone = "us-east-1b"
+  vpc_id                  = aws_vpc.testVPC.id
+  cidr_block              = var.subnet1_address_space
+  map_public_ip_on_launch = true
 
   tags = {
     Name = "Public1"
@@ -65,10 +48,10 @@ resource "aws_internet_gateway" "testIgw" {
 
 resource "aws_route_table" "publicRouter" {
   vpc_id = aws_vpc.testVPC.id
-    route {
-      cidr_block = "0.0.0.0/0"
-      gateway_id = aws_internet_gateway.testIgw.id
-    }
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.testIgw.id
+  }
 
   tags = {
     Name = "publicRouter"
@@ -107,19 +90,58 @@ resource "aws_security_group" "allow_ssh_web" {
   }
 }
 
-resource "aws_instance" "Server1" {
-  ami                    = data.aws_ami.aws-linux.id
-  instance_type          = "t2.micro"
-  key_name               = var.key_name
-  vpc_security_group_ids = [aws_security_group.allow_ssh_web.id]
-  subnet_id              = aws_subnet.Public1.id
+resource "aws_instance" "Server" {
+  count = 2
+
+  ami                         = var.ami
+  instance_type               = "t2.micro"
+  key_name                    = var.key_name
+  vpc_security_group_ids      = [aws_security_group.allow_ssh_web.id]
+  subnet_id                   = aws_subnet.Public1.id
+  # associate_public_ip_address = true
 
   tags = {
-    Name = "Server1"
+    Name    = "itKMITL-Server${count.index + 1}"
+    itclass = "ipa25"
+    week    = "12"
   }
 }
 
+resource "aws_elb" "elb-webLB" {
+  name            = "elb-webLB"
+  subnets         = [aws_subnet.Public1.id]
+  security_groups = [aws_security_group.allow_ssh_web.id]
+
+  listener {
+    instance_port     = 80
+    instance_protocol = "http"
+    lb_port           = 80
+    lb_protocol       = "http"
+  }
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+    target              = "HTTP:80/"
+    interval            = 30
+  }
+
+  instances                   = aws_instance.Server[*].id
+  cross_zone_load_balancing   = true
+  idle_timeout                = 400
+  connection_draining         = true
+  connection_draining_timeout = 400
+
+  tags = {
+    Name = "elb-webLB"
+  }
+}
 
 output "aws_instance_public_ip" {
-  value = aws_instance.Server1.public_ip
+  value = aws_instance.Server[*].public_ip
+}
+
+output "load_balancer_dns_name" {
+  value = aws_elb.elb-webLB.dns_name
 }
