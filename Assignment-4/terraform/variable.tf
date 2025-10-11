@@ -20,23 +20,16 @@ variable "token" {
 
 ### Non-Sensitive Variables ###
 
-variable "ami" {
-  type        = string
-  description = "AMI ID"
-  default     = "ami-052064a798f08f0d3"
-  sensitive   = false
-}
-
-variable "key_name" {
-  type        = string
-  description = "Key pair name"
-  default     = "vockey"
-  sensitive   = false
-}
-
 variable "region" {
   type        = string
   description = "AWS Region"
   default     = "us-east-1"
   sensitive   = false
+}
+
+### S3 Bucket Variables ###
+variable "bucket_name" {
+  type        = string
+  description = "Name of the S3 bucket"
+  default     = "value"
 }
