@@ -22,7 +22,7 @@ resource "aws_s3_object" "images" {
 
   bucket       = aws_s3_bucket.content.id
   key          = "images/image-${count.index + 1}"
-  source       = "${path.root}/${var.image_path}/image-${count.index + 1}.png"  # ← ใช้ path.root
+  source       = "${path.root}/${var.image_path}/image-${count.index + 1}.png"
   content_type = "image/png"
   etag         = filemd5("${path.root}/${var.image_path}/image-${count.index + 1}.png")
 
