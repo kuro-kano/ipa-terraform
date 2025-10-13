@@ -10,13 +10,13 @@ variable "enable_dns_hostnames" {
   type        = bool
 }
 
-variable "subnet_count" {
+variable "public_subnet_count" {
   description = "The number of subnets to create"
   type        = number
 }
 
 variable "subnet_address_space" {
-  description = "The address space for the subnet"
+  description = "The address space for the public subnets"
   type        = list(string)
 }
 
@@ -27,7 +27,7 @@ variable "availability_zones" {
 
 variable "map_public_ip_on_launch" {
   description = "Map public IP on instance launch"
-  type        = bool
+  type        = list(bool)
 }
 
 ### Route table variable ###
