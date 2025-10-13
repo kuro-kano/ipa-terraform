@@ -13,4 +13,11 @@ provider "aws" {
   secret_key = var.secret_key
   token      = var.token
   region     = var.region
+
+  default_tags {
+    tags = {
+      "label"     = "${local.tags_prefix}-motto"
+      "${local.tags_prefix}" = "${local.name_prefix}"
+    }
+  }
 }

@@ -35,6 +35,5 @@ variable "key_name" {
 variable "region" {
   type        = string
   description = "AWS Region"
-  default     = "us-east-1"
   sensitive   = false
 }
