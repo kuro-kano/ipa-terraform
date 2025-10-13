@@ -1,5 +1,5 @@
 
-resource "aws_security_group" "server_sg" {
+resource "aws_security_group" "instance_sg" {
   name        = var.instance_sg_name
   description = var.instance_sg_description
 
@@ -30,7 +30,7 @@ resource "aws_security_group" "server_sg" {
   }
 }
 
-resource "aws_security_group" "elb_sg" {
+resource "aws_security_group" "lb_sg" {
   name        = var.elb_name
   description = var.elb_description
 

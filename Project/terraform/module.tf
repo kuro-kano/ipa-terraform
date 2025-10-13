@@ -10,6 +10,15 @@ module "database" {
 module "instance" {
   source = "./modules/instance"
 
+  # instance variable
+  count = 2
+  
+  ami = var.ami
+  type = "t2.micro"
+  key_name = "vockey"
+  vpc_security_group_ids = [module.security-group.instance_sg_id]
+  subnet_ids = module.networking.public_subnet_ids
+
   # tags variable
   instance_tags = "${local.default_name}-servers"
 }
@@ -17,8 +26,10 @@ module "instance" {
 module "load-balancer" {
   source = "./modules/load-balancer"
 
+
   # tags variable
-  elb_tags = "${local.default_name}-web-loadbalancer"
+  lb_tags = "${local.default_name}-web-loadbalancer"
+  target_group_tags = "${local.default_name}-tgp"
   listener_tags = "${local.default_name}-listener"
 }
 
