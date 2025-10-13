@@ -26,6 +26,41 @@ module "instance" {
 module "load-balancer" {
   source = "./modules/load-balancer"
 
+  # variable
+  vpc_id = module.networking.vpc_id
+  instance_ids = module.instance.instance_ids
+
+  # load balancer variable
+  lb_name = "web-loadbalancer"
+  lb_internal = false
+  lb_type = "application"
+  lb_security_groups = [module.security-group.lb_sg_id]
+  lb_subnets = module.networking.public_subnet_ids
+
+  lb_deletion_protection = false
+
+  # target group variable
+  tg_name = "server-tg"
+  tg_port = 80
+  tg_protocol = "HTTP"
+
+  ## health check variable
+  hc_enabled = true
+  hc_healthy = 2
+  hc_unhealthy = 2
+  hc_timeout = 5
+  hc_protocol = "HTTP"
+  hc_path = "/"
+  hc_interval = 30
+  hc_matcher = "200"
+
+  ## target attachment variable
+
+  # listener variable
+  listener_port = 80
+  listener_protocol = "HTTP"
+  ## default_action
+  default_action_type = "forward"
 
   # tags variable
   lb_tags = "${local.default_name}-web-loadbalancer"
