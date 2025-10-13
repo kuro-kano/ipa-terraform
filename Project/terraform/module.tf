@@ -56,6 +56,61 @@ module "networking" {
 module "security-group" {
   source = "./modules/security-group"
 
+  # instance security group variable
+  instance_sg_name = "${local.default_name}_ssh_web_sg"
+  instance_sg_description = "Allow SSH and HTTP access"
+
+  instance_ingress_rules = [
+    {
+      from_port   = 22
+      to_port     = 22
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    },
+    {
+      from_port   = 80
+      to_port     = 80
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  ]
+
+  instance_egress_rules = [
+    {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  ]
+
+  # ELB security group variable
+  elb_name = "${local.default_name}-elb-SG"
+  elb_description = "Allow HTTP and HTTPS access"
+
+  elb_ingress_rules = [
+    {
+      from_port   = 80
+      to_port     = 80
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    },
+    {
+      from_port   = 443
+      to_port     = 443
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  ]
+
+  elb_egress_rules = [
+    {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  ]
 
   # tags variable
   elb_sg_tags  = "${local.default_name}-elb-SG"
