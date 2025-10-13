@@ -3,8 +3,15 @@ module "database" {
   source = "./modules/database"
 
   # variable
+  allocated_storage = 10
   db_name = "testdb"
-
+  engine = "mysql"
+  engine_version = "8.0"
+  instance_class = "db.t3.micro"
+  username = "admin"
+  password = "password"
+  group_name = "default.mysql8.0"
+  skip_final_snapshot = true
 }
 
 module "instance" {
