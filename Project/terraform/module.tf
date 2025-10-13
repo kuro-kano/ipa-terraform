@@ -3,11 +3,8 @@ module "database" {
   source = "./modules/database"
 
   # variable
+  db_name = "testdb"
 
-  # tags
-  tags = {
-    Name = "testdb"
-  }
 }
 
 module "instance" {
@@ -28,7 +25,21 @@ module "load-balancer" {
 module "networking" {
   source = "./modules/networking"
 
+  # vpc variable
+  network_address_space = "10.0.0.0/16"
+  enable_dns_hostnames = true
+
+  subnet_count = 2
+  subnet_address_space = ["10.0.1.0/24", "10.0.2.0/24"]
+  availability_zones = ["us-east-1a", "us-east-1b"]
+  map_public_ip_on_launch = true
+
+  # route table variable
+  rt_cidr_block = "0.0.0.0/0"
+
   # tags variable
+  vpc_tags = "${local.default_name}-VPC"
+
   igw_tags = "${local.default_name}-testIGW"
 
   public_subnet_tags = [
@@ -44,6 +55,7 @@ module "networking" {
 
 module "security-group" {
   source = "./modules/security-group"
+
 
   # tags variable
   elb_sg_tags  = "${local.default_name}-elb-SG"
