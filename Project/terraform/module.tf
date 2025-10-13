@@ -11,8 +11,8 @@ module "instance" {
   source = "./modules/instance"
 
   # instance variable
-  count = 2
-  
+  instance_count = 2
+
   ami = var.ami
   type = "t2.micro"
   key_name = "vockey"
