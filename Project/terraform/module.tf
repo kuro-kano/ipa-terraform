@@ -56,6 +56,9 @@ module "networking" {
 module "security-group" {
   source = "./modules/security-group"
 
+  # vpc_id variable from networking module
+  vpc_id = module.networking.vpc_id
+
   # instance security group variable
   instance_sg_name = "${local.default_name}_ssh_web_sg"
   instance_sg_description = "Allow SSH and HTTP access"

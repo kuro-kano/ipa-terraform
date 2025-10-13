@@ -1,4 +1,10 @@
 
+### Module Variables ###
+variable "vpc_id" {
+  description = "VPC ID where security groups will be created"
+  type        = string
+}
+
 ### Security Group Variables ###
 variable "instance_sg_name" {
   description = "Name of the Instance Security Group"

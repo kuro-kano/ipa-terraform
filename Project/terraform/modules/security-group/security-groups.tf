@@ -3,7 +3,7 @@ resource "aws_security_group" "server_sg" {
   name        = var.instance_sg_name
   description = var.instance_sg_description
 
-  vpc_id = aws_vpc.main.id
+  vpc_id = var.vpc_id
 
   dynamic "ingress" {
     for_each = var.instance_ingress_rules
@@ -34,7 +34,7 @@ resource "aws_security_group" "elb_sg" {
   name        = var.elb_name
   description = var.elb_description
 
-  vpc_id = aws_vpc.main.id
+  vpc_id = var.vpc_id
 
   dynamic "ingress" {
     for_each = var.elb_ingress_rules
