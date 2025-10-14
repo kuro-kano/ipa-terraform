@@ -1,8 +1,13 @@
 
 # Database Subnet Group
-variable "private_subnet_id" {
+variable "private_subnet_ids" {
   description = "List of private subnet ID for the RDS instance"
   type        = list(string)
+}
+
+variable "subnet_group_name" {
+  description = "The name of the DB subnet group"
+  type        = string
 }
 
 variable "availability_zone" {

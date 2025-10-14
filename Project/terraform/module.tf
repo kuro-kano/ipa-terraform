@@ -99,7 +99,7 @@ module "security-group" {
   ]
 
   # tags variable
-  lb_sg_tags       = "${local.default_name}-elb-SG"
+  lb_sg_tags       = "${local.default_name}-lb-SG"
   instance_sg_tags = "${local.default_name}-instance-SG"
 }
 
@@ -166,7 +166,8 @@ module "database" {
   source = "./modules/database"
 
   # Database subnet group variable
-  private_subnet_id = module.networking.private_subnet_ids
+  private_subnet_ids = module.networking.private_subnet_ids
+  subnet_group_name  = "${local.default_name}-db-subnet-group"
 
   # Database variable
   allocated_storage = 10
@@ -181,6 +182,5 @@ module "database" {
 
   group_name          = "default.mysql8.0"
   skip_final_snapshot = true
-
-  # vpc_security_group_ids = [module.security-group.db_sg_id]
+  availability_zone   = "us-east-1c"
 }
