@@ -31,13 +31,13 @@ resource "aws_security_group" "instance_sg" {
 }
 
 resource "aws_security_group" "lb_sg" {
-  name        = var.elb_name
-  description = var.elb_description
+  name        = var.lb_name
+  description = var.lb_description
 
   vpc_id = var.vpc_id
 
   dynamic "ingress" {
-    for_each = var.elb_ingress_rules
+    for_each = var.lb_ingress_rules
     content {
       from_port   = ingress.value.from_port
       to_port     = ingress.value.to_port
@@ -47,7 +47,7 @@ resource "aws_security_group" "lb_sg" {
   }
 
   dynamic "egress" {
-    for_each = var.elb_egress_rules
+    for_each = var.lb_egress_rules
     content {
       from_port   = egress.value.from_port
       to_port     = egress.value.to_port
@@ -57,6 +57,6 @@ resource "aws_security_group" "lb_sg" {
   }
 
   tags = {
-    Name = var.elb_sg_tags
+    Name = var.lb_sg_tags
   }
 }

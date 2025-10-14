@@ -8,7 +8,7 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = var.map_public_ip_on_launch[0]
 
   tags = {
-    Name = var.public_subnet_tags[count.index + 1]
+    Name = var.public_subnet_tags[count.index]
   }
 }
 

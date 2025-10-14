@@ -16,7 +16,7 @@ provider "aws" {
 
   default_tags {
     tags = {
-      "label"     = "${local.tags_prefix}-motto"
+      "label"                = "${local.tags_prefix}-motto"
       "${local.tags_prefix}" = "${local.name_prefix}"
     }
   }

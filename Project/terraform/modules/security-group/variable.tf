@@ -36,18 +36,18 @@ variable "instance_egress_rules" {
   }))
 }
   
-variable "elb_name" {
-  description = "Name of the ELB Security Group"
+variable "lb_name" {
+  description = "Name of the LB Security Group"
   type        = string
 }
 
-variable "elb_description" {
-  description = "Description of the ELB Security Group"
+variable "lb_description" {
+  description = "Description of the LB Security Group"
   type        = string
 }
 
-variable "elb_ingress_rules" {
-  description = "List of ELB ingress rules"
+variable "lb_ingress_rules" {
+  description = "List of LB ingress rules"
   type = list(object({
     from_port   = number
     to_port     = number
@@ -56,8 +56,8 @@ variable "elb_ingress_rules" {
   }))
 }
 
-variable "elb_egress_rules" {
-  description = "List of ELB egress rules"
+variable "lb_egress_rules" {
+  description = "List of LB egress rules"
   type = list(object({
     from_port   = number
     to_port     = number
@@ -72,7 +72,7 @@ variable "instance_sg_tags" {
   type        = string
 }
 
-variable "elb_sg_tags" {
-  description = "Tags for the ELB Security Group"
+variable "lb_sg_tags" {
+  description = "Tags for the LB Security Group"
   type        = string
 }

@@ -2,16 +2,23 @@
 module "database" {
   source = "./modules/database"
 
-  # variable
+  # Database subnet group variable
+  private_subnet_id = module.networking.private_subnet_ids
+
+  # Database variable
   allocated_storage = 10
-  db_name = "testdb"
-  engine = "mysql"
-  engine_version = "8.0"
-  instance_class = "db.t3.micro"
+  db_name           = "testdb"
+  engine            = "mysql"
+  engine_version    = "8.0"
+  instance_class    = "db.t3.micro"
+  identifier        = "${local.default_name}-db-instance"
+
   username = "admin"
   password = "password"
-  group_name = "default.mysql8.0"
+
+  group_name          = "default.mysql8.0"
   skip_final_snapshot = true
+
 }
 
 module "instance" {
@@ -20,11 +27,11 @@ module "instance" {
   # instance variable
   instance_count = 2
 
-  ami = var.ami
-  type = "t2.micro"
-  key_name = "vockey"
+  ami                    = var.ami
+  type                   = "t2.micro"
+  key_name               = "vockey"
   vpc_security_group_ids = [module.security-group.instance_sg_id]
-  subnet_ids = module.networking.public_subnet_ids
+  subnet_ids             = module.networking.public_subnet_ids
 
   # tags variable
   instance_tags = "${local.default_name}-servers"
@@ -34,45 +41,45 @@ module "load-balancer" {
   source = "./modules/load-balancer"
 
   # variable
-  vpc_id = module.networking.vpc_id
+  vpc_id       = module.networking.vpc_id
   instance_ids = module.instance.instance_ids
 
   # load balancer variable
-  lb_name = "web-loadbalancer"
-  lb_internal = false
-  lb_type = "application"
+  lb_name            = "server-loadbalancer"
+  lb_internal        = false
+  lb_type            = "application"
   lb_security_groups = [module.security-group.lb_sg_id]
-  lb_subnets = module.networking.public_subnet_ids
+  lb_subnets         = module.networking.public_subnet_ids
 
   lb_deletion_protection = false
 
   # target group variable
-  tg_name = "server-tg"
-  tg_port = 80
+  tg_name     = "server-tg"
+  tg_port     = 80
   tg_protocol = "HTTP"
 
   ## health check variable
-  hc_enabled = true
-  hc_healthy = 2
+  hc_enabled   = true
+  hc_healthy   = 2
   hc_unhealthy = 2
-  hc_timeout = 5
-  hc_protocol = "HTTP"
-  hc_path = "/"
-  hc_interval = 30
-  hc_matcher = "200"
+  hc_timeout   = 5
+  hc_protocol  = "HTTP"
+  hc_path      = "/"
+  hc_interval  = 30
+  hc_matcher   = "200"
 
   ## target attachment variable
 
   # listener variable
-  listener_port = 80
+  listener_port     = 80
   listener_protocol = "HTTP"
   ## default_action
   default_action_type = "forward"
 
   # tags variable
-  lb_tags = "${local.default_name}-web-loadbalancer"
+  lb_tags           = "${local.default_name}-web-loadbalancer"
   target_group_tags = "${local.default_name}-tgp"
-  listener_tags = "${local.default_name}-listener"
+  listener_tags     = "${local.default_name}-listener"
 }
 
 module "networking" {
@@ -80,14 +87,14 @@ module "networking" {
 
   # vpc variable
   network_address_space = "10.0.0.0/16"
-  enable_dns_hostnames = true
+  enable_dns_hostnames  = true
 
   # subnet variable
   public_subnet_count = 2
 
   ## [public subnet, public subnet, private subnet]
   subnet_address_space = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  availability_zones   = ["us-east-1a", "us-east-1b", "us-east-1c"]
   ## [public subnets, private subnet]
   map_public_ip_on_launch = [true, false]
 
@@ -105,7 +112,7 @@ module "networking" {
   ]
   private_subnet_tags = "${local.default_name}-privatesubnet1"
 
-  public_route_table_tags = "${local.default_name}-publicRouteTable"
+  public_route_table_tags  = "${local.default_name}-publicRouteTable"
   private_route_table_tags = "${local.default_name}-privateRouteTable"
 
 }
@@ -117,7 +124,7 @@ module "security-group" {
   vpc_id = module.networking.vpc_id
 
   # instance security group variable
-  instance_sg_name = "${local.default_name}_ssh_web_sg"
+  instance_sg_name        = "${local.default_name}_ssh_web_sg"
   instance_sg_description = "Allow SSH and HTTP access"
 
   instance_ingress_rules = [
@@ -144,11 +151,11 @@ module "security-group" {
     }
   ]
 
-  # ELB security group variable
-  elb_name = "${local.default_name}-elb-SG"
-  elb_description = "Allow HTTP and HTTPS access"
+  # LB security group variable
+  lb_name        = "${local.default_name}-lb-SG"
+  lb_description = "Allow HTTP and HTTPS access"
 
-  elb_ingress_rules = [
+  lb_ingress_rules = [
     {
       from_port   = 80
       to_port     = 80
@@ -163,7 +170,7 @@ module "security-group" {
     }
   ]
 
-  elb_egress_rules = [
+  lb_egress_rules = [
     {
       from_port   = 0
       to_port     = 0
@@ -173,6 +180,6 @@ module "security-group" {
   ]
 
   # tags variable
-  elb_sg_tags  = "${local.default_name}-elb-SG"
+  lb_sg_tags       = "${local.default_name}-elb-SG"
   instance_sg_tags = "${local.default_name}-instance-SG"
 }

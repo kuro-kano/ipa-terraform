@@ -21,7 +21,7 @@ variable "token" {
 variable "ami" {
   type        = string
   description = "Amazon Machine Image ID"
-  default     = ""
+  default     = "ami-052064a798f08f0d3"
   sensitive   = false
 }
 

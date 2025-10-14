@@ -2,7 +2,5 @@ access_key = ""
 secret_key = ""
 token      = ""
 
-ami = ""
-
 key_name = "vockey"
 region   = "us-east-1"
