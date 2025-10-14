@@ -30,7 +30,7 @@ variable "vpc_security_group_ids" {
 variable "subnet_ids" {
   description = "Subnets for the EC2 instances"
   type        = list(string)
-  
+
 }
 
 # Tags variables

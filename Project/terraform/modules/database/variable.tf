@@ -15,7 +15,7 @@ variable "availability_zone" {
 variable "allocated_storage" {
   description = "The allocated storage in gigabytes"
   type        = number
-  default = 10
+  default     = 10
 }
 
 variable "db_name" {

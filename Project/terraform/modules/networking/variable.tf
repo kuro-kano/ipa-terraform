@@ -15,6 +15,11 @@ variable "public_subnet_count" {
   type        = number
 }
 
+variable "private_subnet_count" {
+  description = "The number of private subnets to create"
+  type        = number
+}
+
 variable "subnet_address_space" {
   description = "The address space for the public subnets"
   type        = list(string)
@@ -34,7 +39,7 @@ variable "map_public_ip_on_launch" {
 variable "rt_cidr_block" {
   description = "The CIDR block for the route table"
   type        = string
-  default = "0.0.0.0/0"
+  default     = "0.0.0.0/0"
 }
 
 ### Tags variable ###
@@ -55,7 +60,7 @@ variable "public_subnet_tags" {
 
 variable "private_subnet_tags" {
   description = "Tags for the private subnets"
-  type        = string
+  type        = list(string)
 }
 
 variable "public_route_table_tags" {

@@ -35,7 +35,7 @@ variable "instance_egress_rules" {
     cidr_blocks = list(string)
   }))
 }
-  
+
 variable "lb_name" {
   description = "Name of the LB Security Group"
   type        = string

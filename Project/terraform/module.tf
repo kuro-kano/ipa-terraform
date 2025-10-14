@@ -7,11 +7,12 @@ module "networking" {
   enable_dns_hostnames  = true
 
   # subnet variable
-  public_subnet_count = 2
+  public_subnet_count  = 2
+  private_subnet_count = 2
 
   ## [public subnet, public subnet, private subnet]
-  subnet_address_space = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  availability_zones   = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  subnet_address_space = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24", "10.0.4.0/24"]
+  availability_zones   = ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d"]
   ## [public subnets, private subnet]
   map_public_ip_on_launch = [true, false]
 
@@ -26,7 +27,10 @@ module "networking" {
     "${local.default_name}-publicsubnet1",
     "${local.default_name}-publicsubnet2"
   ]
-  private_subnet_tags = "${local.default_name}-privatesubnet1"
+  private_subnet_tags = [
+    "${local.default_name}-privatesubnet1",
+    "${local.default_name}-privatesubnet2"
+  ]
 
   public_route_table_tags  = "${local.default_name}-publicRouteTable"
   private_route_table_tags = "${local.default_name}-privateRouteTable"
